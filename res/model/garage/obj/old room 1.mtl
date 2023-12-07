@@ -1,0 +1,158 @@
+# Blender 4.0.1 MTL File: 'old room 1.blend'
+# www.blender.org
+
+newmtl DOOR
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/13d6d8d39853b6e2fbe26c49822d53e9.jpg
+
+newmtl Material
+Ns 5.831403
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/concrete-2788397_1920.png
+
+newmtl Material.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/counter front.png
+
+newmtl Material.002
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/plaster_grey_04_diff_2k.jpg
+map_Ns textures/plaster_grey_04_rough_ao_2k.jpg
+map_Bump -bm 1.000000 textures/plaster_grey_04_nor_2k.jpeg
+
+newmtl Material.003
+Ns 61.519623
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.350394 0.350394 0.350394
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Poll_1
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/1.png
+
+newmtl block_low
+Ka 1.000000 1.000000 1.000000
+Ks 0.098425 0.098425 0.098425
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/block_low_albedo.jpg
+map_Ns textures/block_low_roughness.jpg
+map_refl textures/block_low_metallic.jpg
+map_Bump -bm 4.400001 textures/block_low_normal.jpeg
+
+newmtl ground
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/gravel_ground_01_diff_2k.jpg
+map_Ns textures/gravel_ground_01_rough_2k.jpg
+map_Bump -bm 1.000000 textures/gravel_ground_01_nor_2k.jpeg
+
+newmtl metal_rod
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/rusted-metal-texture-5.jpg
+
+newmtl petli_low
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/petli_low_albedo.jpg
+map_Ns textures/petli_low_roughness.jpg
+map_refl textures/petli_low_metallic.jpg
+map_Bump -bm 3.200000 textures/petli_low_normal.jpeg
+
+newmtl pipe
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/pipe.png
+
+newmtl poll2
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/poll 2.png
+
+newmtl poll3
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/poll.png
+
+newmtl poll4
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/4.png
+
+newmtl top_concrete
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures/4.png

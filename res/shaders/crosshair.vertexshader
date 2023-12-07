@@ -1,0 +1,9 @@
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+
+void main()
+{
+    float scale = 0.2;
+    gl_Position = vec4(scale * aPos.x/16, scale * aPos.y/10, aPos.z, 1.0);
+}

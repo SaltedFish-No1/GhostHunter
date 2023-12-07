@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\model">
+      <UniqueIdentifier>{521af9a1-e7ef-41c1-b6cd-a0d427b4214a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shader">
+      <UniqueIdentifier>{8f0e2b19-293f-471d-86e9-9134b4547389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{330841b4-2588-4d05-bf87-0d87023054bb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\admin.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\camera.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ghost.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\player.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shaders.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tools.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\model\mesh.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\model\model.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\World.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\admin.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\camera.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\ghost.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\player.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shaders.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tools.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\model\mesh.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\model\model.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\res\shaders\crosshair.fragmentshader">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="..\res\shaders\crosshair.vertexshader">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="..\res\shaders\ghost.fragmentshader">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="..\res\shaders\ghost.vertexshader">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="..\res\shaders\lightFragmentShader.fragmentshader">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="..\res\shaders\simpleShader.fragmentshader">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="..\res\shaders\simpleShader.vertexshader">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>

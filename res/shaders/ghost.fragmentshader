@@ -1,0 +1,112 @@
+#version 330 core
+struct Light {
+    vec3  position;
+    vec3  direction;
+    float cutOff;
+
+    float constant;
+    float linear;
+    float quadratic;
+    float strength;
+};
+
+
+struct Ghost {
+    /**
+    * type = 0: ghost
+    * type = 1: ghost face
+    * type = 2: pumpkin
+    */
+    int type;
+    float alpha;
+    vec3 faceColor; //
+    //the refleted light color and it strength
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
+
+out vec4 FragColor;
+
+in vec2 TexCoords;
+in vec3 Normal;
+in vec3 FragPos;
+
+uniform sampler2D texture_diffuse1;
+uniform Ghost ghostParams;
+uniform Light ghostLight;
+uniform 
+
+
+void main()
+{    
+    if(ghostParams.type == 0)
+    {
+        //draw ghosts
+
+
+        vec3 norm = normalize(Normal);
+        //set ghost
+        float penetrateRate =  0.1;
+        vec4 ghostColor = texture(texture_diffuse1, TexCoords);
+        //set ghostLight Attenuation
+        float ghostLightDistance = length(ghostLight.position - FragPos);
+        float ghostLightAttenuation = 1.0 / (ghostLight.constant + ghostLight.linear * ghostLightDistance + ghostLight.quadratic * (ghostLightDistance * ghostLightDistance));
+        //set ambient
+        vec4 ghostAmbient = vec4(ghostParams.ambient, ghostParams.alpha) * ghostColor;
+        //set diffuse
+        vec3 ghostLightDir = normalize(FragPos - ghostLight.position);
+        float diffuseStrength = -dot(norm, ghostLightDir);
+        vec4 ghostDiffuse = vec4(0.0);
+        vec4 ghostPertrate = vec4(0.0);
+        
+        if(diffuseStrength > 0)
+        {
+            //diffusing instead of penetrating
+            ghostDiffuse = vec4(ghostParams.diffuse * diffuseStrength, ghostParams.alpha) * ghostColor;
+        }
+        else
+        {
+            //penetrating instead of diffusing
+            vec4 ghostPertrate = vec4(penetrateRate) * vec4(ghostParams.diffuse * (-diffuseStrength), ghostParams.alpha) * ghostColor;
+        }
+        FragColor = ghostLightAttenuation * (ghostAmbient + ghostPertrate + ghostDiffuse);
+    }
+    else if(ghostParams.type == 1)
+    {
+        //draw ghost faces
+        vec3 norm = normalize(Normal);
+        vec4 faceColor = vec4(ghostParams.faceColor, 1);
+        //set ghostLight Attenuation
+        float ghostLightDistance = length(ghostLight.position - FragPos);
+        float ghostLightAttenuation = 1.0 / (ghostLight.constant + ghostLight.linear * ghostLightDistance + ghostLight.quadratic * (ghostLightDistance * ghostLightDistance));
+        //set ambient
+        vec4 ghostAmbient = vec4(ghostParams.ambient, ghostParams.alpha) * faceColor;
+        //set diffuse
+        vec3 ghostLightDir = normalize(FragPos - ghostLight.position);
+        vec4 ghostDiffuse = vec4(ghostParams.diffuse * max(-dot(norm, ghostLightDir), 0.0), ghostParams.alpha) * faceColor;
+
+        FragColor = ghostLightAttenuation * (ghostAmbient + ghostDiffuse);
+    }
+    else if(ghostParams.type == 2)
+    {
+        //draw pumpkins
+        vec3 norm = normalize(Normal);
+        vec4 pumpkinColor = texture(texture_diffuse1, TexCoords);
+        //set ghostLight Attenuation
+        float ghostLightDistance = length(ghostLight.position - FragPos);
+        float ghostLightAttenuation = 1.0 / (ghostLight.constant + ghostLight.linear * ghostLightDistance + ghostLight.quadratic * (ghostLightDistance * ghostLightDistance));
+        //set ambient
+        vec4 ghostAmbient = vec4(ghostParams.ambient, ghostParams.alpha) * pumpkinColor;
+        //set diffuse
+        vec3 ghostLightDir = normalize(FragPos - ghostLight.position);
+        vec4 ghostDiffuse = vec4(ghostParams.diffuse * max(-dot(norm, ghostLightDir), 0.0), ghostParams.alpha) * pumpkinColor;
+
+        FragColor = ghostLightAttenuation * (ghostAmbient + ghostDiffuse);
+    }
+
+//    ghostDiffuse = vec4(ghostMaterial.diffuse * max(-dot(norm, ghostLightDir), 0.0), ghostAlpha) * ghostColor;
+//    FragColor = ghostLightAttenuation * (ghostAmbient + ghostDiffuse);
+}
