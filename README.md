@@ -34,5 +34,5 @@ Win the game
 ## Reference
 
 [LearnOpenGL](https://github.com/JoeyDeVries/LearnOpenGL)
-
-[Shoot Game](https://github.com/joohnyoung/Shoot-Game)
+[Assimp](https://github.com/assimp/assimp)
+[stb](https://github.com/nothings/stb)
