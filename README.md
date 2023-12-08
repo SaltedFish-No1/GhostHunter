@@ -13,7 +13,7 @@ Ghost Hunter is a simple FPS game project developed by C++ and OpenGL . Players 
 ## How to build&run
 
 - build: Just build in **visual studio 2022** in Windows **x86** architecture.
-- run directly:  Download `Excutable.zip`, decompress and run `./Excutable/GhostHunter/GhostHunter.exe`
+- run directly:  run `./Excutable/GhostHunter/GhostHunter.exe`
 
 ## Pictures
 
