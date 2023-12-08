@@ -6,7 +6,7 @@ Ghost Hunter is a simple FPS game project developed by C++ and OpenGL . Players 
 
 1. Player and Ghosts can not move in 5 seconds after game start.
 2. Player can move with key 'w', 's', 'a', 'd' and control the view with mouse.
-3. Player shoot with vacuum when he/she right click.
+3. Player shoot with vacuum when he/she left click.
 4. vacuum works if and only if the aiming ghost is in 5 meters.
 5. if the ghost touched the player, game over, player lose.
 
