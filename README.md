@@ -23,11 +23,11 @@ Ghost Hunter is a simple FPS game project developed by C++ and OpenGL . Players 
 
 Lose the game
 
-<img src="./screenshoots/lose.gif" alt="GhostHunter1" style="zoom: 200%;" />
+<img src="./screenshoots/lose.gif" alt="GhostHunter1" style="zoom: 500%;" />
 
 Win the game
 
-<img src="./screenshoots/win.gif" alt="GhostHunter1" style="zoom: 200%;" />
+<img src="./screenshoots/win.gif" alt="GhostHunter1" style="zoom: 500%;" />
 
 
 
