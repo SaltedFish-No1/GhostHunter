@@ -46,14 +46,47 @@ installed GLFW/Assimp or fetch them via `FetchContent`.
 
 #### macOS
 
+Tested on macOS 12+ (Apple Silicon and Intel). The project links against
+the deprecated-but-still-shipped OpenGL 3.3 Core framework via GLFW.
+
+**1. Install prerequisites**
+
 ```sh
-brew install glfw assimp
-cmake -S . -B build
-cmake --build build --config Release
+xcode-select --install                  # Apple Clang + Command Line Tools
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"   # skip if Homebrew is already installed
+brew install cmake glfw assimp
 ```
 
-If Homebrew packages are not available, leave them out and CMake will
-fetch GLFW and Assimp from source automatically.
+**2. Configure & build**
+
+```sh
+git clone https://github.com/SaltedFish-No1/GhostHunter.git
+cd GhostHunter
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+```
+
+**3. Run**
+
+```sh
+./build/bin/GhostHunter/GhostHunter
+```
+
+**Variations**
+
+- *Without Homebrew:* omit `brew install glfw assimp`. CMake will pull
+  both libraries from source via `FetchContent` automatically (first
+  configure takes a few minutes).
+- *Apple Silicon + Homebrew on Intel path (`/usr/local`):* CMake usually
+  picks the right one, but if `find_package(glfw3)` fails point it at
+  the right prefix:
+  `cmake -S . -B build -DCMAKE_PREFIX_PATH="$(brew --prefix)"`.
+- *Xcode generator:*
+  `cmake -S . -B build -G Xcode && cmake --build build --config Release`.
+
+If you see *"Failed to create GLFW window"* on launch, check that you
+are running from a graphical session (not a headless SSH shell) and
+that your GPU supports OpenGL 3.3 (every Mac since OS X 10.9 does).
 
 #### Linux
 
