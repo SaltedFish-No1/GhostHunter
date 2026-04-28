@@ -27,6 +27,11 @@ bool winDetect(Ghost* ghosts, int ghostNum);
 
 int main()
 {
+    // Make "../res/..." relative paths resolve against the staged tree
+    // regardless of the cwd the user launched from. Must happen before
+    // any model/shader loads.
+    GLTools::anchorWorkingDirectoryToExecutable();
+
     window = GLTools::gltCreateContext();
     Shader shader = Shader("../res/shaders/simpleShader.vertexshader", "../res/shaders/simpleShader.fragmentshader");
     

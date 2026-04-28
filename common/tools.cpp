@@ -5,6 +5,19 @@
 #include "stb_image.h" //load texture
 #endif // !STB_IMAGE_IMPLEMENTATION
 
+#include <filesystem>
+#include <system_error>
+
+#if defined(_WIN32)
+    #include <windows.h>
+#elif defined(__APPLE__)
+    #include <mach-o/dyld.h>
+    #include <climits>
+#elif defined(__linux__)
+    #include <unistd.h>
+    #include <climits>
+#endif
+
 float MouseInfo::speed(0.05f);
 MouseInfo mouseInfo;
 
@@ -16,7 +29,8 @@ GLFWwindow* GLTools::gltCreateContext()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	// Required for an OpenGL 3.3 Core context on macOS; harmless elsewhere.
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "GhostHunter", NULL, NULL);
 	if (window == NULL)
 	{
@@ -33,6 +47,40 @@ GLFWwindow* GLTools::gltCreateContext()
 		exit(-1);
 	}
 	return window;
+}
+
+namespace {
+std::filesystem::path executablePath()
+{
+#if defined(_WIN32)
+	wchar_t buf[MAX_PATH];
+	DWORD n = GetModuleFileNameW(nullptr, buf, MAX_PATH);
+	if (n == 0 || n == MAX_PATH) return {};
+	return std::filesystem::path(buf, buf + n);
+#elif defined(__APPLE__)
+	char buf[PATH_MAX];
+	uint32_t size = sizeof(buf);
+	if (_NSGetExecutablePath(buf, &size) != 0) return {};
+	return std::filesystem::path(buf);
+#elif defined(__linux__)
+	char buf[PATH_MAX];
+	ssize_t n = readlink("/proc/self/exe", buf, sizeof(buf));
+	if (n <= 0) return {};
+	return std::filesystem::path(std::string(buf, static_cast<size_t>(n)));
+#else
+	return {};
+#endif
+}
+} // namespace
+
+void GLTools::anchorWorkingDirectoryToExecutable()
+{
+	std::filesystem::path exe = executablePath();
+	if (exe.empty()) return;
+	std::error_code ec;
+	std::filesystem::path dir = std::filesystem::canonical(exe, ec).parent_path();
+	if (ec || dir.empty()) return;
+	std::filesystem::current_path(dir, ec);
 }
 
 unsigned int GLTools::gltLoadTexture(char const* path)

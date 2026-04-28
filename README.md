@@ -1,6 +1,6 @@
 # GhostHunter
 
-Ghost Hunter is a simple FPS game project developed by C++ and OpenGL . Players of the game will act as ghost hunters, using a vacuum cleaner to capture ghosts in a haunted house. 
+Ghost Hunter is a simple FPS game project developed by C++ and OpenGL. Players of the game will act as ghost hunters, using a vacuum cleaner to capture ghosts in a haunted house.
 
 ## How to play
 
@@ -10,31 +10,68 @@ Ghost Hunter is a simple FPS game project developed by C++ and OpenGL . Players 
 4. vacuum works if and only if the aiming ghost is in 5 meters.
 5. if the ghost touched the player, game over, player lose.
 
-## How to build&run
+## Build & Run
 
-### Prebuilt (Windows)
+The project builds on **Windows**, **macOS** and **Linux** from a single
+CMake configuration. The required runtime is OpenGL 3.3 Core, GLFW and
+Assimp; `glad`, `glm`, `stb_image` are vendored inside `include/`.
 
-Run `./Excutable/GhostHunter/GhostHunter.exe`.
-
-### Visual Studio 2022 (Windows)
-
-Open `GhostHunter.sln` and build.
-
-### CMake
+### Quick start (any platform)
 
 ```sh
 cmake -S . -B build
 cmake --build build --config Release
 ```
 
-The executable lands in `build/bin/GhostHunter/` and resources are staged
-under `build/bin/res/` so the exe can be launched directly.
+The executable lands in `build/bin/GhostHunter/` and a copy of `res/` is
+staged at `build/bin/res/` so the game can be launched directly. At
+startup the program `chdir`s to its own directory, so it works regardless
+of where you invoke it from.
 
-- **Windows**: uses the vendored `include/` and `lib/` shipped in the repo;
-  no external dependencies required.
-- **Linux / macOS**: install `glfw` and `assimp` via your package manager
-  (e.g. `apt install libglfw3-dev libassimp-dev`, `brew install glfw assimp`)
-  before configuring.
+### Platform notes
+
+#### Windows
+
+By default uses the prebuilt `glfw3.lib` / `assimp-vc143-mt.lib`
+shipped under `lib/`. Tested with Visual Studio 2022 (toolset v143):
+
+```sh
+cmake -S . -B build -G "Visual Studio 17 2022"
+cmake --build build --config Release
+```
+
+To opt out of the vendored binaries (e.g. for MinGW / clang-cl) add
+`-DGHOSTHUNTER_USE_VENDORED_DEPS=OFF`; CMake will then either find an
+installed GLFW/Assimp or fetch them via `FetchContent`.
+
+#### macOS
+
+```sh
+brew install glfw assimp
+cmake -S . -B build
+cmake --build build --config Release
+```
+
+If Homebrew packages are not available, leave them out and CMake will
+fetch GLFW and Assimp from source automatically.
+
+#### Linux
+
+```sh
+sudo apt install libglfw3-dev libassimp-dev xorg-dev
+cmake -S . -B build
+cmake --build build
+```
+
+Without the system packages the same `cmake` command will pull GLFW
+and Assimp from source via `FetchContent`.
+
+### CMake options
+
+| Option | Default | Notes |
+| --- | --- | --- |
+| `GHOSTHUNTER_USE_VENDORED_DEPS` | `ON` on Windows, `OFF` elsewhere | Use the prebuilt MSVC libs in `lib/`. |
+| `GHOSTHUNTER_FETCH_DEPS` | `ON` | Fall back to `FetchContent` for any missing dependency. |
 
 ## Pictures
 

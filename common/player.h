@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <cmath>
 #include <model/model.h>
 
 //Add jump function
@@ -233,7 +234,7 @@ public:
 		modelMat4 = glm::translate(modelMat4, offset);
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
 		{
-			modelMat4 = glm::translate(modelMat4, glm::vec3(1, 0.4, 0.4) * (std::sinf(6 * glfwGetTime())));
+			modelMat4 = glm::translate(modelMat4, glm::vec3(1, 0.4, 0.4) * static_cast<float>(std::sin(6.0 * glfwGetTime())));
 		}
 		
 
