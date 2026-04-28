@@ -1,4 +1,7 @@
-#include"tools.h"
+#include "tools.h"
+
+#include "app.h"
+
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
@@ -19,36 +22,9 @@
 #endif
 
 float MouseInfo::speed(0.05f);
-MouseInfo mouseInfo;
 
 
 /*-----------------------------------GLTools related-----------------------------------*/
-GLFWwindow* GLTools::gltCreateContext()
-{
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	// Required for an OpenGL 3.3 Core context on macOS; harmless elsewhere.
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "GhostHunter", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		exit(-1);
-	}
-	glfwMakeContextCurrent(window);
-
-	// glad: load all OpenGL function pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		exit(-1);
-	}
-	return window;
-}
-
 namespace {
 std::filesystem::path executablePath()
 {
@@ -125,26 +101,27 @@ bool GameStatus::isPaused(false);
 
 void GameStatus::pause(GLFWwindow* window)
 {
-	//unlock the cursor into the window
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); //hidden and disabled the cursor
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	isPaused = true;
-	mouseInfo.firstMouse = true;
+	if (App* app = App::fromWindow(window))
+	{
+		app->mouseInfo.firstMouse = true;
+	}
 }
 
 void GameStatus::unpause(GLFWwindow* window)
 {
-	//Lock the cursor into the window
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //hidden and disabled the cursor
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	isPaused = false;
 }
 
 /*-----------------------------------MouseInfo related-----------------------------------*/
 void MouseInfo::comp_offset(float xpos, float ypos)
 {
-	if (!GameStatus::isPaused)//if paused, do not update camera
+	if (!GameStatus::isPaused)
 	{
 		xoffset = xpos - lastX;
-		yoffset = lastY - ypos; //curse up, view down
+		yoffset = lastY - ypos;
 
 		yaw += speed * xoffset;
 		pitch += speed * yoffset;
@@ -157,23 +134,4 @@ void MouseInfo::reset_offset()
 {
 	xoffset = 0.0f;
 	yoffset = 0.0f;
-}
-
-/*-----------------------------------Callback functions-----------------------------------*/
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	if (mouseInfo.firstMouse)
-	{
-		mouseInfo.lastX = (float)xpos;
-		mouseInfo.lastY = (float)ypos;
-		mouseInfo.firstMouse = false;
-	}
-	mouseInfo.comp_offset((float)xpos, (float)ypos);
-	mouseInfo.reset_offset();
-
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
 }

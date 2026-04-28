@@ -1,5 +1,7 @@
 #include"camera.h"
 
+#include "app.h"
+
 const float Camera::gravity(9.8f);
 float Camera::moveSpeed(5.0f);
 
@@ -59,19 +61,22 @@ void Camera::defaultActions()
 
 void Camera::processMouseMovement()
 {
-	//mouseInfo.yaw += mouseInfo.speed * mouseInfo.xoffset;
-	//mouseInfo.pitch += mouseInfo.speed * mouseInfo.yoffset;
+	App* app = App::fromWindow(window);
+	if (!app)
+	{
+		return;
+	}
+	MouseInfo& mouseInfo = app->mouseInfo;
 	float limitation = 50.0f;
 	if (mouseInfo.pitch > limitation)
 		mouseInfo.pitch = limitation;
- 	if (mouseInfo.pitch < -limitation)
+	if (mouseInfo.pitch < -limitation)
 		mouseInfo.pitch = -limitation;
 
 	front.x = cos(glm::radians(mouseInfo.yaw)) * cos(glm::radians(mouseInfo.pitch));
 	front.y = sin(glm::radians(mouseInfo.pitch));
 	front.z = sin(glm::radians(mouseInfo.yaw)) * cos(glm::radians(mouseInfo.pitch));
 	front = glm::normalize(front);
-
 }
 
 void Camera::processKeyEvent()

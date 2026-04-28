@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\common\admin.h" />
+    <ClInclude Include="..\common\app.h" />
     <ClInclude Include="..\common\camera.h" />
     <ClInclude Include="..\common\ghost.h" />
     <ClInclude Include="..\common\model\mesh.h" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\admin.cpp" />
+    <ClCompile Include="..\common\app.cpp" />
     <ClCompile Include="..\common\camera.cpp" />
     <ClCompile Include="..\common\ghost.cpp" />
     <ClCompile Include="..\common\model\mesh.cpp" />
@@ -155,6 +157,7 @@
     <ClCompile Include="..\common\player.cpp" />
     <ClCompile Include="..\common\shaders.cpp" />
     <ClCompile Include="..\common\tools.cpp" />
+    <ClCompile Include="..\common\World.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
