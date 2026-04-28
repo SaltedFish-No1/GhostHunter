@@ -19,3 +19,11 @@ Release/
 .idea/
 .vscode/
 *.swp
+
+# Build artifacts
+Excutable/
+Executable/
+*.exe
+*.pdb
+*.exp
+*.ilk
