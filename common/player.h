@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <cmath>
 #include <model/model.h>
 
 //Add jump function
@@ -162,7 +163,7 @@ public:
 	Model vacuumModel = Model("../res/model/vacuum/vacuum.obj");
 	Model crosshairModel = Model("../res/model/sphere/sphere.obj");
 	Model winEmoji = Model("../res/model/emoji/WinEmoji.obj");
-	Model loseEmoji = Model("../res/model/emoji/loseEmoji.obj");
+	Model loseEmoji = Model("../res/model/emoji/LoseEmoji.obj");
 	//glm::mat4 viewMat4 = glm::mat4(1.0f);
 	glm::mat4 projectionMat4 = glm::perspective(glm::radians(45.0f), (float)1600 / (float)1000, 0.01f, 200.0f);
 	//light settting
@@ -233,7 +234,7 @@ public:
 		modelMat4 = glm::translate(modelMat4, offset);
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
 		{
-			modelMat4 = glm::translate(modelMat4, glm::vec3(1, 0.4, 0.4) * (std::sinf(6 * glfwGetTime())));
+			modelMat4 = glm::translate(modelMat4, glm::vec3(1, 0.4, 0.4) * static_cast<float>(std::sin(6.0 * glfwGetTime())));
 		}
 		
 

@@ -23,6 +23,13 @@ class GLTools
 public:
 	static GLFWwindow* gltCreateContext();
 	static unsigned int gltLoadTexture(char const* path);
+
+	// Resolve the directory containing the running executable on Windows /
+	// macOS / Linux, then chdir into it. After this call, the legacy
+	// "../res/..." relative paths resolve against the staged resource
+	// layout (build/bin/res/) regardless of where the user invoked the
+	// binary from. Safe to call once at startup.
+	static void anchorWorkingDirectoryToExecutable();
 };
 
 /*-----------------------------------GameStatus related-----------------------------------*/
@@ -71,8 +78,8 @@ public:
 	bool firstMouse = true;
 	float xoffset = 0.0f; 
 	float yoffset = 0.0f; 
-	float yaw = 270.0f;   //Æ«º½½Ç
-	float pitch = 0.0f; //¸©Ñö½Ç
+	float yaw = 270.0f;   //Æ«ï¿½ï¿½ï¿½ï¿½
+	float pitch = 0.0f; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	static float speed;
 
 	void reset_offset();

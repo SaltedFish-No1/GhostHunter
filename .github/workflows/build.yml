@@ -1,0 +1,55 @@
+name: build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            generator: "Unix Makefiles"
+          - os: macos-latest
+            generator: "Unix Makefiles"
+          - os: windows-latest
+            generator: "Visual Studio 17 2022"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libgl1-mesa-dev xorg-dev libxkbcommon-dev \
+            libglfw3-dev libassimp-dev
+
+      - name: Install macOS deps
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install glfw assimp
+
+      - name: Configure
+        run: cmake -S . -B build -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      - name: List artifacts
+        shell: bash
+        run: |
+          echo "Build tree:"
+          ls -R build/bin || dir build\\bin

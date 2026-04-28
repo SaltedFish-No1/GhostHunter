@@ -10,6 +10,7 @@
 #include <thread>
 #include <atomic>
 #include <random>
+#include <cmath>
 #include <player.h>
 
 class Ghost :public Model
@@ -387,7 +388,7 @@ public:
             currentTime = glfwGetTime();
             while (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && health > 0)
             {
-                float effect = 0.1 * (std::sinf(8 * glfwGetTime() * glm::radians(45.0f)) + 1);
+                float effect = 0.1f * (std::sin(8.0 * glfwGetTime() * glm::radians(45.0f)) + 1);
 
                 health -= glfwGetTime() - currentTime;
                 currentTime = glfwGetTime();
@@ -495,7 +496,7 @@ public:
 
             position += runDir * speed * timer.getDeltaTime();
             //floating
-            currentFloatIncre = 0.4 * std::sinf(3 * glfwGetTime() * glm::radians(45.0f));
+            currentFloatIncre = 0.4f * std::sin(3.0 * glfwGetTime() * glm::radians(45.0f));
             position.y += currentFloatIncre - lastFloatIncre;
             lastFloatIncre = currentFloatIncre;
             //collision dectect
