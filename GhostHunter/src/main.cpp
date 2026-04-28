@@ -23,6 +23,22 @@
 bool ghostKillDetect(Ghost* ghosts, int ghostNum, Player player, float threshold = 0.5);
 bool winDetect(Ghost* ghosts, int ghostNum);
 
+enum class GamePhase
+{
+    Countdown,
+    Playing,
+    Won,
+    Lost,
+    Closing
+};
+
+struct GameClock
+{
+    GamePhase phase = GamePhase::Countdown;
+    double phaseStart = 0.0;
+    double elapsed(double now) const { return now - phaseStart; }
+};
+
 int main()
 {
     // Make "../res/..." relative paths resolve against the staged tree
@@ -92,35 +108,43 @@ int main()
         ghosts[i].setPosition(glm::vec3(xRandom(gen), 2.5f, zRandom(gen)));
     }
 
-    bool isLose = false;
-    bool isWin = false;
-    bool isFrozen = true;
-    static float currentTime = glfwGetTime();
-    double lastFrameTime = glfwGetTime();
-    bool gameOver = false;
-    bool closeWindow = false;
-    while (!glfwWindowShouldClose(app.window) && !closeWindow)
+    constexpr double countdownSeconds = 5.0;
+    constexpr double exitDelaySeconds = 5.0;
+
+    GameClock clock;
+    clock.phaseStart = glfwGetTime();
+    double lastFrameTime = clock.phaseStart;
+    glm::vec3 lastPos = player.getViewPosition();
+
+    while (!glfwWindowShouldClose(app.window))
     {
         double now = glfwGetTime();
         float dt = static_cast<float>(now - lastFrameTime);
         lastFrameTime = now;
 
-        if (!gameOver)
+        if (clock.phase == GamePhase::Countdown && clock.elapsed(now) >= countdownSeconds)
         {
-            isLose = ghostKillDetect(ghosts, ghostNum, player);
-            isWin = winDetect(ghosts, ghostNum);
+            clock.phase = GamePhase::Playing;
+            clock.phaseStart = now;
         }
 
-        if (glfwGetTime() - currentTime < 5.0)
+        if (clock.phase == GamePhase::Playing)
         {
-            isFrozen = true;
+            if (ghostKillDetect(ghosts, ghostNum, player))
+            {
+                clock.phase = GamePhase::Lost;
+                clock.phaseStart = now;
+            }
+            else if (winDetect(ghosts, ghostNum))
+            {
+                clock.phase = GamePhase::Won;
+                clock.phaseStart = now;
+            }
         }
-        else if (glfwGetTime() - currentTime > 5.0 && !gameOver)
-        {
-            isFrozen = false;
-        }
-        glm::vec3 static lastPos = player.getViewPosition();
-        if (isFrozen)
+
+        const bool playing = (clock.phase == GamePhase::Playing);
+
+        if (!playing)
         {
             player.setViewPosition(lastPos);
         }
@@ -128,7 +152,7 @@ int main()
 
         player.processInput();
 
-        if (!isFrozen && glfwGetMouseButton(app.window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+        if (playing && glfwGetMouseButton(app.window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
         {
             for (int i = 0; i != ghostNum; ++i)
             {
@@ -144,7 +168,7 @@ int main()
             }
         }
 
-        float ghostDt = (isFrozen || gameOver) ? 0.0f : dt;
+        float ghostDt = playing ? dt : 0.0f;
         for (int i = 0; i != ghostNum; ++i)
         {
             ghosts[i].update(ghostDt, player);
@@ -167,38 +191,31 @@ int main()
             ghosts[i].drawGhostFace(shader, player);
         }
 
-        if (isLose && !isWin)
+        if (clock.phase == GamePhase::Won || clock.phase == GamePhase::Lost)
         {
-            gameOver = true;
-            player.drawEmoji(shader, isWin);
-        }
-        else if (isWin && !isLose)
-        {
-            gameOver = true;
-            player.drawEmoji(shader, isWin);
-        }
-
-        if (gameOver)
-        {
-            isFrozen = true;
-            static float clostWindowClock = glfwGetTime();
-            if (glfwGetTime() - clostWindowClock > 5.0)
+            player.drawEmoji(shader, clock.phase == GamePhase::Won);
+            if (clock.elapsed(now) >= exitDelaySeconds)
             {
-                closeWindow = true;
+                clock.phase = GamePhase::Closing;
             }
         }
 
         glfwSwapBuffers(app.window);
         glfwPollEvents();
+
+        if (clock.phase == GamePhase::Closing)
+        {
+            break;
+        }
     }
 
-    if (isLose && !isWin)
-    {
-        std::cout << "YOU LOSE!" << std::endl;
-    }
-    else if (isWin && !isLose)
+    if (clock.phase == GamePhase::Won)
     {
         std::cout << "YOU WIN!" << std::endl;
+    }
+    else if (clock.phase == GamePhase::Lost)
+    {
+        std::cout << "YOU LOSE!" << std::endl;
     }
 
     app.shutdown();
