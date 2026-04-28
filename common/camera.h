@@ -6,11 +6,6 @@
 
 #include<thread>
 
-//global variables should be defined in *.cpp files instead of *.h files
-//define gloabal variables in headers could arise redefination errors.
-extern GLsizei window_width, window_height;
-extern MouseInfo mouseInfo;
-
 class Camera {
 public:
 	Timer timer;

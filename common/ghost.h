@@ -9,6 +9,7 @@
 #include <model/model.h>
 #include "tools.h"
 
+struct GLFWwindow;
 class Player;
 class Shader;
 
@@ -73,7 +74,11 @@ protected:
     std::vector<Box> innerBoxes;
     std::vector<Box> outerBoxes;
 
+    GLFWwindow* window = nullptr;
+
 public:
+    void setWindow(GLFWwindow* window);
+
     explicit Ghost(std::string directory);
     Ghost();
     ~Ghost();

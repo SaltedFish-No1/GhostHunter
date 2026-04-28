@@ -39,6 +39,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GH_RUNTIME_DIR}/GhostHunter)
 # ---------------------------------------------------------------------------
 set(GH_COMMON_SOURCES
     common/admin.cpp
+    common/app.cpp
     common/camera.cpp
     common/ghost.cpp
     common/player.cpp

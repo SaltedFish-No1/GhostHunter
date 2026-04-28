@@ -44,6 +44,11 @@ void Ghost::setModel()
     centralize(meshes, { 0, 1 });
 }
 
+void Ghost::setWindow(GLFWwindow* window)
+{
+    this->window = window;
+}
+
 bool Ghost::getIsCaptured()
 {
     return isCaptured;
