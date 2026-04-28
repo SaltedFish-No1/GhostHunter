@@ -35,11 +35,11 @@ public:
 
 	void processInput();
 
-	inline glm::vec3 getPosition()
+	inline glm::vec3 getPosition() const
 	{
 		return glm::vec3(viewPosition.x, viewPosition.y - height, viewPosition.z);
 	}
-	inline glm::vec3 getViewPosition()
+	inline glm::vec3 getViewPosition() const
 	{
 		return viewPosition;
 	}

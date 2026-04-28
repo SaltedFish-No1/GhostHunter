@@ -2,8 +2,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <iostream>
-#include <random>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -15,28 +13,13 @@
 Ghost::Ghost(std::string directory) : Model(directory)
 {
     setModel();
+    rng.seed(std::random_device{}());
 }
 
 Ghost::Ghost() : Model("../res/model/ghost/OBJ.obj")
 {
     setModel();
-}
-
-Ghost::~Ghost()
-{
-    isSettingAlpha = false;
-    isSettingAmbient = false;
-    isLooming = false;
-    isFloating = false;
-    isRunAway = false;
-    if (alphaChangeThread.joinable())
-        alphaChangeThread.detach();
-    if (ambientChangeThread.joinable())
-        ambientChangeThread.detach();
-    if (loomingThread.joinable())
-        loomingThread.detach();
-    if (floatingThread.joinable())
-        floatingThread.detach();
+    rng.seed(std::random_device{}());
 }
 
 void Ghost::setModel()
@@ -52,11 +35,6 @@ void Ghost::setWindow(GLFWwindow* window)
 bool Ghost::getIsCaptured()
 {
     return isCaptured;
-}
-
-void Ghost::setShaking(bool isShaking)
-{
-    this->isShaking = isShaking;
 }
 
 void Ghost::setView(glm::mat4 view)
@@ -162,250 +140,104 @@ void Ghost::drawGhostFace(Shader shader, Player player)
     }
 }
 
-void Ghost::drawPumpkin(Shader shader, int type)
-{
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    shader.setInt("ghostParams.type", 2);
-    shader.setVec3("ghostParams.ambient", glm::vec3(ambient));
-    shader.setVec3("ghostParams.diffuse", glm::vec3(diffuse));
-    shader.setVec3("ghostParams.specular", glm::vec3(specular));
-    shader.setFloat("ghostParams.shininess", 32.0f);
-    shader.setVec3("ghostParams.faceColor", faceColor);
-    shader.setFloat("ghostParams.alpha", faceAlpha);
-
-    switch (type)
-    {
-    case 0:
-        meshes[2].draw(shader);
-        meshes[3].draw(shader);
-        break;
-    case 1:
-        for (int i = 4; i != 213; ++i)
-        {
-            meshes[i].draw(shader);
-        }
-        break;
-    case 2:
-        for (int i = 213; i != meshes.size(); ++i)
-        {
-            meshes[i].draw(shader);
-        }
-        break;
-    default:
-        std::cout << "There is no pumpkin type: " << type << std::endl;
-        break;
-    }
-}
-
-void Ghost::showUp()
-{
-    alphaChangeThread = std::thread(&Ghost::setGhostAlpha, this, 0.6);
-    alphaChangeThread.detach();
-}
-
-void Ghost::disappear()
-{
-    alphaChangeThread = std::thread(&Ghost::setGhostAlpha, this, 0.1);
-    alphaChangeThread.detach();
-}
-
-void Ghost::startLooming(float lowerBound, float upperBound)
-{
-    isLooming = true;
-    loomingThread = std::thread(&Ghost::looming, this, lowerBound, upperBound);
-}
-
-void Ghost::stopLooming()
-{
-    isLooming = false;
-    loomingThread.detach();
-}
-
-void Ghost::setGhostAlpha(float alpha)
-{
-    if (!isSettingAlpha)
-    {
-        isSettingAlpha = true;
-        Timer timer;
-        float diff = alpha - ghostAlpha;
-        while ((alpha - ghostAlpha > 0 && diff > 0)
-            || (ghostAlpha - alpha > 0 && diff < 0))
-        {
-            timer.tictok();
-            ghostAlpha += diff * timer.getDeltaTime();
-        }
-        ghostAlpha = alpha;
-        isSettingAlpha = false;
-    }
-    else
-    {
-        std::cout << "Alpha setting process is running!" << std::endl;
-    }
-}
-
-void Ghost::setAmbient(float ambient)
-{
-    if (!isSettingAmbient)
-    {
-        isSettingAmbient = true;
-        Timer timer;
-        float sign = std::abs(ambient - ambient) / (ambient - ambient);
-        while ((ambient - ambient > 0 && sign > 0)
-            || (ambient - ambient > 0 && sign < 0))
-        {
-            timer.tictok();
-            ambient += sign * timer.getDeltaTime();
-        }
-        ambient = ambient;
-        isSettingAmbient = false;
-    }
-    else
-    {
-        std::cout << "Ambient setting process is running!" << std::endl;
-    }
-}
-
-void Ghost::looming(float lowerBound, float upperBound)
-{
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> realDist(lowerBound, upperBound);
-    while (isLooming)
-    {
-        double randomReal = realDist(gen);
-        setAmbient(randomReal);
-    }
-}
-
-void Ghost::captureTFunc()
-{
-    glm::vec3 originScale = scale;
-    float currentTime;
-    if (health > 0.0)
-    {
-        currentTime = glfwGetTime();
-        while (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && health > 0)
-        {
-            float effect = 0.1f * (std::sin(8.0 * glfwGetTime() * glm::radians(45.0f)) + 1);
-
-            health -= glfwGetTime() - currentTime;
-            currentTime = glfwGetTime();
-
-            scale = originScale * (1 - effect);
-        }
-    }
-    if (health <= 0.0)
-    {
-        currentTime = glfwGetTime();
-        std::cout << "Captured!" << std::endl;
-        while (scale.x > 0)
-        {
-            float temp = (glfwGetTime() - currentTime);
-            scale = scale - temp * glm::vec3(1e-2);
-        }
-        isCaptured = true;
-    }
-
-    scale *= std::min(health / fullHealth + 0.2, 1.0);
-    isCapturing = false;
-}
-
 void Ghost::capture()
 {
-    if (!isCapturing)
+    if (isCaptured)
     {
-        isCapturing = true;
-        faceColor = glm::vec3(0.8, 0.0, 0.0);
-        animationThreads.push_back(std::thread(&Ghost::captureTFunc, this));
-        animationThreads[animationThreads.size() - 1].detach();
+        return;
+    }
+    captureRequestedThisFrame = true;
+    if (!captureActive)
+    {
+        captureActive = true;
+        captureElapsed = 0.0f;
+        captureOriginScale = scale;
+        faceColor = glm::vec3(0.8f, 0.0f, 0.0f);
     }
 }
 
-void Ghost::twinkling()
+void Ghost::update(float dt, const Player& player)
 {
-    animationThreads.push_back(std::thread(&Ghost::twinklingTFunc, this));
-    animationThreads[animationThreads.size() - 1].detach();
-}
-
-void Ghost::twinklingTFunc()
-{
-    if (!isTwinkling)
+    // 1. Capture pressure (Phase A: drain health while vacuum aimed)
+    if (captureActive && health > 0.0f)
     {
-        isTwinkling = true;
-        float startTime = glfwGetTime();
-        int times = twinklingTime * 4;
-        float interval = twinklingTime / times;
-        int lastCnt = -1;
-        while (glfwGetTime() - startTime < twinklingTime)
+        if (captureRequestedThisFrame)
         {
-            if (int((glfwGetTime() - startTime) / interval) != lastCnt)
-            {
-                drawEnable = !drawEnable;
-                lastCnt = int((glfwGetTime() - startTime) / interval);
-            }
+            captureElapsed += dt;
+            health -= dt;
+            float effect = 0.1f * (std::sin(8.0f * captureElapsed * glm::radians(45.0f)) + 1.0f);
+            scale = captureOriginScale * (1.0f - effect);
         }
-        drawEnable = true;
-        isTwinkling = false;
+        else
+        {
+            // Vacuum released before depletion: apply partial recovery
+            // factor (matches the trailing line of the legacy worker)
+            scale = captureOriginScale * std::min(health / fullHealth + 0.2f, 1.0f);
+            captureActive = false;
+        }
     }
-    else
+
+    // 2. Capture finalisation (Phase B: shrink to zero, then mark captured)
+    if (captureActive && health <= 0.0f)
     {
-        std::cout << "Is twinkling!" << std::endl;
+        scale -= glm::vec3(dt * 0.5f);
+        if (scale.x <= 0.0f)
+        {
+            scale = glm::vec3(0.0f);
+            isCaptured = true;
+            captureActive = false;
+            runAwayActive = false;
+            twinklingActive = true;
+            twinklingElapsed = 0.0f;
+            drawEnable = true;
+        }
     }
-}
+    captureRequestedThisFrame = false;
 
-void Ghost::runAwayTFun(Player& player)
-{
-    Timer timer;
-    glm::vec3 runDir;
-    float lastFloatIncre = 0;
-    float currentFloatIncre = 0;
-    bool isCollide = false;
-    float correctAngle = 0.0f;
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> realDist(0.0f, 360.0f);
-
-    while (isRunAway)
+    // 3. Free-roam runaway (default state while alive)
+    if (!isCaptured)
     {
-        if (isCollide)
+        if (!runAwayActive)
         {
-            correctAngle = realDist(gen);
+            runAwayActive = true;
         }
-        else if (!(isCollide) && correctAngle > 0)
-        {
-        }
-        timer.tictok();
-        runDir = position - player.getViewPosition();
 
+        glm::vec3 runDir = position - player.getViewPosition();
+        float ang = glm::radians(runAwayCorrectAngle);
         runDir = glm::vec3(
-            runDir.x * glm::cos(glm::radians(correctAngle)) - runDir.z * glm::sin(glm::radians(correctAngle)),
-            0.0,
-            runDir.x * glm::sin(glm::radians(correctAngle)) + runDir.z * glm::cos(glm::radians(correctAngle))
+            runDir.x * glm::cos(ang) - runDir.z * glm::sin(ang),
+            0.0f,
+            runDir.x * glm::sin(ang) + runDir.z * glm::cos(ang)
         );
-        runDir = glm::normalize(runDir);
+        if (glm::length(runDir) > 1e-6f)
+        {
+            runDir = glm::normalize(runDir);
+            position += runDir * speed * dt;
+        }
 
-        position += runDir * speed * timer.getDeltaTime();
-
-        currentFloatIncre = 0.4f * std::sin(3.0 * glfwGetTime() * glm::radians(45.0f));
+        floatPhase += dt;
+        float currentFloatIncre = 0.4f * std::sin(3.0f * floatPhase * glm::radians(45.0f));
         position.y += currentFloatIncre - lastFloatIncre;
         lastFloatIncre = currentFloatIncre;
 
-        isCollide = outerCollisionCheck() || innerCollisionCheck();
+        bool collided = outerCollisionCheck() || innerCollisionCheck();
+        if (collided)
+        {
+            runAwayCorrectAngle = angleDist(rng);
+        }
     }
-    isRunAway = false;
-}
 
-void Ghost::runAway(Player& player)
-{
-    if (!isRunAway)
+    // 4. Post-capture twinkle
+    if (twinklingActive)
     {
-        isRunAway = true;
-        animationThreads.push_back(std::thread(&Ghost::runAwayTFun, this, std::ref(player)));
-        animationThreads[animationThreads.size() - 1].detach();
+        twinklingElapsed += dt;
+        int idx = static_cast<int>(twinklingElapsed / twinklingBlinkPeriod);
+        drawEnable = (idx % 2) == 0;
+        if (twinklingElapsed >= twinklingTotal)
+        {
+            twinklingActive = false;
+            drawEnable = false;
+        }
     }
 }
 

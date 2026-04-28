@@ -32,7 +32,7 @@ public:
 	void setView(glm::mat4 view);
 	void setProjection(glm::mat4 projection);
 	void setScale(float scale);
-	void setOffset(glm::vec3 scale);
+	void setOffset(glm::vec3 newOffset);
 
 	void draw(Shader shader, Player player);
 	void drawCollisionBoxes(Shader shader);

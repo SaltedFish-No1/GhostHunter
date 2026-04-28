@@ -1,7 +1,6 @@
 #pragma once
-#include <atomic>
+#include <random>
 #include <string>
-#include <thread>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -50,23 +49,29 @@ protected:
     float ghostLight = 1.0f;
     glm::vec3 faceColor = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    std::atomic<bool> isSettingAlpha = false;
-    std::thread alphaChangeThread;
-    std::atomic<bool> isSettingAmbient = false;
-    std::thread ambientChangeThread;
-    std::atomic<bool> isLooming = false;
-    std::thread loomingThread;
-    std::atomic<bool> isFloating = false;
-    std::thread floatingThread;
-    std::atomic<bool> isCapturing = false;
-    std::atomic<bool> isCaptured = false;
-    std::vector<std::thread> animationThreads;
+    // Capture animation state (driven by update(dt, player))
+    bool captureActive = false;
+    bool captureRequestedThisFrame = false;
+    float captureElapsed = 0.0f;
+    glm::vec3 captureOriginScale = glm::vec3(0.1f);
+    bool isCaptured = false;
 
-    bool isShaking = false;
-    std::atomic<bool> isTwinkling = false;
-    float twinklingTime = 3.0;
-    std::atomic<bool> drawEnable = true;
-    std::atomic<bool> isRunAway = false;
+    // Twinkling state (post-capture blink, currently unused but reachable
+    // via update once captureActive transitions to depleted)
+    bool twinklingActive = false;
+    float twinklingElapsed = 0.0f;
+    float twinklingTotal = 3.0f;
+    float twinklingBlinkPeriod = 0.25f;
+    bool drawEnable = true;
+
+    // Free-roam runaway state (player exists -> ghost flees)
+    bool runAwayActive = false;
+    float runAwayCorrectAngle = 0.0f;
+    float floatPhase = 0.0f;
+    float lastFloatIncre = 0.0f;
+    std::mt19937 rng;
+    std::uniform_real_distribution<float> angleDist =
+        std::uniform_real_distribution<float>(0.0f, 360.0f);
 
     float innerCollisionOffset = 0.4f;
     float outerCollisionOffset = 1.0f;
@@ -81,13 +86,12 @@ public:
 
     explicit Ghost(std::string directory);
     Ghost();
-    ~Ghost();
+    ~Ghost() = default;
     Ghost(const Ghost&) = default;
 
     void setModel();
 
     bool getIsCaptured();
-    void setShaking(bool isShaking);
     void setView(glm::mat4 view);
     void setProjection(glm::mat4 projection);
     glm::vec3 getPosition();
@@ -96,26 +100,15 @@ public:
     void drawGhost(Shader shader, Player player);
     glm::mat4 faceToPlayer(glm::mat4 model, glm::vec3 playerPosition);
     void drawGhostFace(Shader shader, Player player);
-    void drawPumpkin(Shader shader, int type);
 
-    void showUp();
-    void disappear();
-    void startLooming(float lowerBound, float upperBound);
-    void stopLooming();
+    // Single per-frame entry point. Replaces the runAway / capture /
+    // twinkling / looming worker threads with explicit dt-driven state.
+    void update(float dt, const Player& player);
 
-protected:
-    void setGhostAlpha(float alpha);
-    void setAmbient(float ambient);
-    void looming(float lowerBound, float upperBound);
-
-public:
-    void captureTFunc();
+    // Called by the main loop on every frame the player's vacuum is
+    // currently aiming at this ghost within range. Marks the ghost as
+    // being drained; the next update() consumes the request.
     void capture();
-    void twinkling();
-    void twinklingTFunc();
-
-    void runAwayTFun(Player& player);
-    void runAway(Player& player);
 
     bool outerCollisionCheck();
     void setInnerBoxes(std::vector<Box> innerBoxes);

@@ -96,10 +96,15 @@ int main()
     bool isWin = false;
     bool isFrozen = true;
     static float currentTime = glfwGetTime();
+    double lastFrameTime = glfwGetTime();
     bool gameOver = false;
     bool closeWindow = false;
     while (!glfwWindowShouldClose(app.window) && !closeWindow)
     {
+        double now = glfwGetTime();
+        float dt = static_cast<float>(now - lastFrameTime);
+        lastFrameTime = now;
+
         if (!gameOver)
         {
             isLose = ghostKillDetect(ghosts, ghostNum, player);
@@ -119,13 +124,6 @@ int main()
         {
             player.setViewPosition(lastPos);
         }
-        else
-        {
-            for (int i = 0; i != ghostNum; ++i)
-            {
-                ghosts[i].runAway(std::ref(player));
-            }
-        }
         lastPos = player.getViewPosition();
 
         player.processInput();
@@ -144,6 +142,12 @@ int main()
                     }
                 }
             }
+        }
+
+        float ghostDt = (isFrozen || gameOver) ? 0.0f : dt;
+        for (int i = 0; i != ghostNum; ++i)
+        {
+            ghosts[i].update(ghostDt, player);
         }
 
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);

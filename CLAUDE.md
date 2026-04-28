@@ -151,6 +151,28 @@ GhostHunter/
 - ⚠️ **资源版权审查**：`res/model/{garage,ghost,vacuum,emoji,sphere}` 等模型/纹理来源需逐一确认是否允许公开/商用。**这是设为 Public 之前的硬性前置任务**，否则有版权风险。不能用的需要换或删。
 - 顺手把 `Excutable/` → `Executable/`、`screenshoots/` → `screenshots/`，路径在 README 里也同步更新。
 
+### 阶段 6+：未来路线（含鬼 AI 寻路）
+
+> 本节仅供未来扩展参考；阶段 1–5 落地后再考虑。
+
+**重新引入线程的唯一合理场景：鬼 AI 寻路。**
+当前 `runAway` 是傻瓜级（朝玩家反方向直线 + AABB 撞墙夹紧），鬼很容易卡角。要把它升级到真寻路时，**线程才有正当理由回归**——这和阶段 3 删掉的"动画热路径上的线程误用"是性质完全不同的两件事，不要混为一谈。
+
+- **算法**：A\* over navmesh，或先做简化版（grid + Dijkstra），后续再换 navmesh。
+- **并发模型**：`JobQueue` + 少量 worker 线程；鬼在 `update(dt, player)` 里**仅在状态变化时**（路径过期 / 玩家位置位移超阈值）提交一个 `PathRequest`，立即拿到一个 future；后续帧若 future ready 就采用新路径，否则继续走旧路径。
+- **必须遵守的约束**（写在这里防止重蹈覆辙）：
+  1. worker 线程**绝不**调任何 GL / GLFW 函数。
+  2. worker 线程**只读**地图（navmesh 是不可变只读数据）和**只写自己拥有**的 path 缓冲，不直接写 ghost 成员。
+  3. 主线程从 future 里拷出结果，**主线程**负责把 path 应用到 ghost。
+  4. 不再用 `detach()`，统一用 `std::jthread` 或者拥有清晰生命周期的 worker pool（析构时 `request_stop` + `join`）。
+- **可量测**：寻路平均耗时、p99 帧时间在 worker on/off 时的对比；这恰好对应原 SOW 第 4 条要求的"measurable result"。
+
+**同期可考虑但优先级更低的扩展**（每条都是完整的小特性）：
+
+- **异步资源加载**：启动时用 `std::async` 并行解析 obj，主线程跑 loading 屏，结果回主线程上传 GPU。一次性使用，不是常驻线程。
+- **屏幕录制 / GIF 导出**：framebuffer readback → worker 编码 PNG/GIF，主线程不卡。README 现成有 GIF，可以做成游戏内"按 F12 截屏 / F11 录制"。
+- **网络多人合作**（最大规模扩展）：直接对应课程 5 个专题里的 Sockets，玩法上有 Phasmophobia / Lethal Company 这类同类型范本可参考。
+
 ## 6. 注意事项 / 不动什么
 
 - **玩法不变**：5 秒冻结倒计时、5 米吸鬼有效距离、与鬼接触判负、全鬼被吸判胜——这些数值和规则在重构里保持。
