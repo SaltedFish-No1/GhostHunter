@@ -1,0 +1,21 @@
+# CMake
+build/
+build-*/
+out/
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+cmake-build-*/
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+x64/
+Win32/
+Debug/
+Release/
+
+# IDE
+.idea/
+.vscode/
+*.swp
