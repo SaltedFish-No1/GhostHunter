@@ -34,9 +34,9 @@ void World::setScale(float scale)
 	this->scale = glm::vec3(scale);
 }
 
-void World::setOffset(glm::vec3 scale)
+void World::setOffset(glm::vec3 newOffset)
 {
-	this->offset = offset;
+	this->offset = newOffset;
 }
 
 void World::draw(Shader shader, Player player)
@@ -64,11 +64,6 @@ void World::draw(Shader shader, Player player)
 	Model::draw(shader);
 }
 
-// NOTE: this function does not actually render the boxes correctly
-// (the glBufferData call below uses sizeof(std::vector) instead of the
-// element count and passes &vertices instead of vertices.data()). The
-// surrounding refactor preserves behaviour; the bug fix is scheduled
-// for a later phase.
 void World::drawCollisionBoxes(Shader shader)
 {
 	glEnable(GL_DEPTH_TEST);
@@ -139,7 +134,7 @@ void World::drawCollisionBoxes(Shader shader)
 		glBindVertexArray(VAO);
 		glGenBuffers(1, &VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 

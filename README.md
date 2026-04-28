@@ -12,7 +12,7 @@ Ghost Hunter is a simple FPS game project developed by C++ and OpenGL. Players o
 ## Features
 
 - First-person camera with WASD movement, mouse-look, and jump
-- Four animated ghost objects, each driven by its own `std::thread`
+- Four animated ghost objects, animated and steered by per-frame state updates from the main loop
 - Per-ghost flickering internal light (random intensity)
 - Vacuum-cleaner shooting mechanic with limited charges and reload (`r`)
 - AABB-based collision detection against the level geometry and other entities

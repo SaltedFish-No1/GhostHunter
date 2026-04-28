@@ -16,23 +16,23 @@ public:
 	Camera(GLFWwindow* window, glm::vec3 pos);
 	Camera(GLFWwindow* window);
 
-	float getFOV()
+	float getFOV() const
 	{
 		return FOV;
 	}
-	glm::mat4 getView()
+	glm::mat4 getView() const
 	{
 		return view;
 	}
-	glm::vec3 getPosition()
+	glm::vec3 getPosition() const
 	{
 		return viewPosition;
 	}
-	glm::vec3 getFront()
+	glm::vec3 getFront() const
 	{
-		return front;;
+		return front;
 	}
-	glm::vec3 getRight()
+	glm::vec3 getRight() const
 	{
 		return right;
 	}
