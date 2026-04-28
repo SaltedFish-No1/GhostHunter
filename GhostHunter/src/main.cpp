@@ -12,6 +12,8 @@
 #endif // !STB_IMAGE_IMPLEMENTATION
 
 #include <fstream>
+#include <memory>
+#include <stdexcept>
 #include <World.h>
 #include <ghost.h>
 #include <random>
@@ -33,7 +35,20 @@ int main()
     GLTools::anchorWorkingDirectoryToExecutable();
 
     window = GLTools::gltCreateContext();
-    Shader shader = Shader("../res/shaders/simpleShader.vertexshader", "../res/shaders/simpleShader.fragmentshader");
+    std::unique_ptr<Shader> shaderPtr;
+    try
+    {
+        shaderPtr = std::make_unique<Shader>(
+            "../res/shaders/simpleShader.vertexshader",
+            "../res/shaders/simpleShader.fragmentshader");
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Shader load failed: " << e.what() << std::endl;
+        glfwTerminate();
+        return 1;
+    }
+    Shader& shader = *shaderPtr;
     
 
 
