@@ -44,6 +44,7 @@ set(GH_COMMON_SOURCES
     common/player.cpp
     common/shaders.cpp
     common/tools.cpp
+    common/World.cpp
     common/model/mesh.cpp
     common/model/model.cpp
 )

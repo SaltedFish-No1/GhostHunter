@@ -155,6 +155,7 @@
     <ClCompile Include="..\common\player.cpp" />
     <ClCompile Include="..\common\shaders.cpp" />
     <ClCompile Include="..\common\tools.cpp" />
+    <ClCompile Include="..\common\World.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
