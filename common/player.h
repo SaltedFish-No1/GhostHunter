@@ -163,7 +163,7 @@ public:
 	Model vacuumModel = Model("../res/model/vacuum/vacuum.obj");
 	Model crosshairModel = Model("../res/model/sphere/sphere.obj");
 	Model winEmoji = Model("../res/model/emoji/WinEmoji.obj");
-	Model loseEmoji = Model("../res/model/emoji/loseEmoji.obj");
+	Model loseEmoji = Model("../res/model/emoji/LoseEmoji.obj");
 	//glm::mat4 viewMat4 = glm::mat4(1.0f);
 	glm::mat4 projectionMat4 = glm::perspective(glm::radians(45.0f), (float)1600 / (float)1000, 0.01f, 200.0f);
 	//light settting
