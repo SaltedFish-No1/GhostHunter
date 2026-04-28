@@ -12,7 +12,7 @@
 #endif // !STB_IMAGE_IMPLEMENTATION
 
 #include <fstream>
-#include <world.h>
+#include <World.h>
 #include <ghost.h>
 #include <random>
 
