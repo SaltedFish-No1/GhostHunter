@@ -1,6 +1,23 @@
 # GhostHunter
 
+> A simple first-person ghost-catching game built with C++ and OpenGL.
+>
+> Course final project for **ECE 6122 — Advanced Programming Techniques**,
+> Georgia Tech, Fall 2023. Originally proposed as a custom team project
+> (approved in lieu of the default 3D-animated-scene assignment); this
+> repository contains my implementation.
+
 Ghost Hunter is a simple FPS game project developed by C++ and OpenGL. Players of the game will act as ghost hunters, using a vacuum cleaner to capture ghosts in a haunted house.
+
+## Features
+
+- First-person camera with WASD movement, mouse-look, and jump
+- Four animated ghost objects, each driven by its own `std::thread`
+- Per-ghost flickering internal light (random intensity)
+- Vacuum-cleaner shooting mechanic with limited charges and reload (`r`)
+- AABB-based collision detection against the level geometry and other entities
+- Win/lose state with end-of-game emoji and auto-exit
+- Cross-platform CMake build (Windows / macOS / Linux)
 
 ## How to play
 
@@ -120,7 +137,11 @@ Win the game
 
 <img src="./screenshoots/win.gif" alt="GhostHunter1" style="zoom: 500%;" />
 
+## Acknowledgements
 
+Originally a two-person team project for ECE 6122.
+The course materials and assignment specification are © Georgia Tech and
+are not redistributed in this repository.
 
 ## Reference
 
